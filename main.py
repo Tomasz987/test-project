@@ -10,7 +10,7 @@ class MainWindow(QMainWindow):
         self.setGeometry(100, 100, 1200, 800)
         self.setWindowTitle('I dont know what i do')
 
-        self.frame = QFrame()
+
 
 
 
