@@ -14,5 +14,6 @@ class MainWindow(QMainWindow):
 
         self.main_layout = Q
 
+        self.setGeometry()
 
 
