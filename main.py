@@ -12,7 +12,6 @@ class MainWindow(QMainWindow):
 
         self.frame = QFrame()
 
-        self.main_layout = Q
 
 
 
