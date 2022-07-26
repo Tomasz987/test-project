@@ -7,8 +7,6 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
-        self.setGeometry(100, 100, 1200, 800)
-        self.setWindowTitle('I dont know what i do')
 
 
 
