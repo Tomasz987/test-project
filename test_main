@@ -6,11 +6,11 @@ from pynput.mouse import Listener, Button, Controller, Events
 
 from tools.mouse_listener import RecordMouseEvents
 
-class MouseController(Controller):
-""""Class to override mouse events methods"""
 
+class MouseController(Controller):
+    """"Class to override mouse events methods."""
     def press(self, button):
-    """"This overridden method not send press event to mouse"""
+        """"This overridden method not send press event to mouse."""
         self.SendInput(
             1,
             ctypes.byref(MouseController.INPUT(
@@ -20,23 +20,25 @@ class MouseController(Controller):
                         dwFlags=button.value[0],
                         mouseData=button.left.value[2])))),
             ctypes.sizeof(MouseController.INPUT))
-          
-  
+
+
 def test_record_mouse_click():
     """Test check if mouse press event is saved"""
     record_object = RecordMouseEvents()
+
     excepted_result = [
         {'mouse_click':
-              {
-                  'button': 'Button.left',
-                  'pressed': False
-              },
+            {
+                'button': 'Button.left',
+                'pressed': False
+            },
         }
     ]
 
     def simulate_event():
         Controller().press(Button.left)
         record_object.listener.stop()
+
     thread1 = Thread(target=record_object.record)
     thread2 = Thread(target=simulate_event)
     thread1.start()
