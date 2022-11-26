@@ -28,12 +28,16 @@ def test_record_mouse_click():
 
     excepted_result = [
         {'mouse_click':
-            {
-                'button': 'Button.left',
-                'pressed': False
-            },
+            (
+                {
+                    'button': 'Button.left',
+                    'pressed': False
+                },
+                {'time': 0.0}
+            )
         }
     ]
+
 
     def simulate_event():
         Controller().press(Button.left)
