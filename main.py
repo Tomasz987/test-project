@@ -12,7 +12,14 @@ class RecordMouseEvents:
         return args
 
     def on_click(self, *args):
-        return args
+{
+            'mouse_click': (
+                {'button': str(button),
+                 'pressed': pressed},
+                {'time': 0.0},
+            ),
+        }
+
 
     def on_scroll(self, *args):
         return args
