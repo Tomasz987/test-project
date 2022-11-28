@@ -1,4 +1,4 @@
-"""Collection of test to mouse_listener module."""
+"""Collection of tests to mouse_listener module."""
 from pynput.mouse import Listener
 
 from tools.mouse_listener import RecordMouseEvents
