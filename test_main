@@ -1,53 +1,51 @@
-import ctypes
-from threading import Thread
-import time
-
-from pynput.mouse import Listener, Button, Controller, Events
+"""Collection of test to mouse_listener module."""
+from pynput.mouse import Listener
 
 from tools.mouse_listener import RecordMouseEvents
 
 
-class MouseController(Controller):
-    """"Class to override mouse events methods."""
-    def press(self, button):
-        """"This overridden method not send press event to mouse."""
-        self.SendInput(
-            1,
-            ctypes.byref(MouseController.INPUT(
-                type=MouseController.INPUT.MOUSE,
-                value=MouseController.INPUT_union(
-                    mi=MouseController.MOUSEINPUT(
-                        dwFlags=button.value[0],
-                        mouseData=button.left.value[2])))),
-            ctypes.sizeof(MouseController.INPUT))
+def test_listener_start_record(mocker):
+    """Test check if record method is called to Listener.join method."""
+    mocker.patch.object(Listener, 'join')
+    record_object = RecordMouseEvents()
+
+    record_object.record()
+
+    Listener.join.assert_called_once()
 
 
-def test_record_mouse_click():
-    """Test check if mouse press event is saved"""
+def test_passed_listener_arguments(mocker):
+    """Test check passed arguments to create Listener."""
+    mocker.patch.object(Listener, '__new__')
+    mocker.patch.object(RecordMouseEvents, 'on_move')
+    mocker.patch.object(RecordMouseEvents, 'on_click')
+    mocker.patch.object(RecordMouseEvents, 'on_scroll')
+
+    record_object = RecordMouseEvents()
+    record_object.record()
+
+    Listener.__new__.assert_called_once_with(
+        Listener,
+        on_move=record_object.events.append(record_object.on_move),
+        on_click=record_object.events.append(record_object.on_click),
+        on_scroll=record_object.events.append(record_object.on_scroll),
+    )
+
+
+def test_output_record(mocker):
+    """Test check output record method"""
+    mocker.patch.object(Listener, '__new__')
+    mocker.patch.object(RecordMouseEvents, 'on_move')
+    mocker.patch.object(RecordMouseEvents, 'on_click')
+    mocker.patch.object(RecordMouseEvents, 'on_scroll')
+    mocker.patch.object(RecordMouseEvents, 'record', side_effect=RecordMouseEvents().record)
+
     record_object = RecordMouseEvents()
 
     excepted_result = [
-        {'mouse_click':
-            (
-                {
-                    'button': 'Button.left',
-                    'pressed': False
-                },
-                {'time': 0.0}
-            )
-        }
+        RecordMouseEvents().on_move,
+        RecordMouseEvents().on_click,
+        RecordMouseEvents().on_scroll,
     ]
 
-
-    def simulate_event():
-        Controller().press(Button.left)
-        record_object.listener.stop()
-
-    thread1 = Thread(target=record_object.record)
-    thread2 = Thread(target=simulate_event)
-    thread1.start()
-    thread2.start()
-    thread1.join()
-    thread2.join()
-
-    assert record_object.events == excepted_result
+    assert record_object.record() == excepted_result
